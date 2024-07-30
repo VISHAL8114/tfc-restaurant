@@ -1,64 +1,39 @@
-import { API_URL } from "../utils/constants";
-import { useEffect, useState } from "react";
-import Shimmer from "./Shimmer";
-import RestaurantCard from "./RestaurantCard";
+import { createBrowserRouter,RouterProvider,Outlet } from "react-router-dom";
+import Login from "./login";
+import BodyLayout from "./BodyLayout";
+import ContactUs from "./ConactUs";
+import AboutUs from "./Aboutus";
+import Error from "./Error";
+import RestaurantMenu from "./RestaurantMenu";
 
 const Body = () => {
-    const [listOfRestaurants, setListOfRestaurants] = useState([]);
-    const [filteredRestaurant, setFilteredRestaurant] = useState([]);
-    const [searchText, setSearchText] = useState('');
+    const router = createBrowserRouter([
+        {
+            path:"/",
+            element:<BodyLayout />,
+            errorElement:<Error />
+        },
+        {
+            path:"/login",
+            element:<Login />
+        },{
+            path:"/contactus",
+            element:<ContactUs />
+        },{
+            path:"/aboutus",
+            element:<AboutUs />
+        },{
+            path:"/restaurants/:resId",
+            element:<RestaurantMenu />
+        }
+    ])
+    
+    
+  return (
+    <div>
+      <RouterProvider router={router}/>
+    </div>
+  )
+  }
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        const data = await fetch(API_URL);
-        const json = await data.json();
-        console.log(json);
-        const restaurants = json.data.cards[1].card.card.gridElements.infoWithStyle.restaurants;
-        setListOfRestaurants(restaurants);
-        setFilteredRestaurant(restaurants);
-    };
-
-    const handleFilterButtonClick = () => {
-        const filtered = listOfRestaurants.filter((res) => res.info.avgRating > 4);
-        setFilteredRestaurant(filtered);
-    };
-
-    const handleSearchButtonClick = () => {
-        const filtered = listOfRestaurants.filter((res) =>
-            res.info.name.toLowerCase().includes(searchText.toLowerCase())
-        );
-        setFilteredRestaurant(filtered);
-    };
-
-    return listOfRestaurants.length === 0 ? (
-        <Shimmer />
-    ) : (
-        <div className="bg-gray-200 p-4">
-            <div className="flex justify-center mb-6">
-                <input
-                    type="text"
-                    placeholder="Search a restaurant you want..."
-                    className="border-2 border-black w-2/5 p-2"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                />
-                <button className="text-white text-sm bg-mediumGreen px-5 rounded-r-md" onClick={handleSearchButtonClick}>
-                    Search
-                </button>
-                <button onClick={handleFilterButtonClick} className="bg-mediumGreen ml-8 text-sm text-white px-5 rounded-md">
-                    Top Rated Restaurants
-                </button>
-            </div>
-            <div className="flex flex-wrap justify-center gap-6">
-                {filteredRestaurant.map((restaurant) => (
-                    <RestaurantCard key={restaurant.info.id} resData={restaurant} />
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export default Body;
+  export default Body;

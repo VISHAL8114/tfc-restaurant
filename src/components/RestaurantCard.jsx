@@ -6,7 +6,7 @@ const Rescard = (props) => {
     const {deliveryTime} = resData?.info.sla;
 
     return (
-        <div className="w-52 h-100 bg-white rounded-lg cursor-pointer hover:shadow-2xl p-4">
+        <div className="w-52 h-[488px] bg-white rounded-lg cursor-pointer hover:shadow-2xl p-4">
             <img
                 className="w-full rounded-t-lg hover:opacity-80"
                 alt="res-logo"
